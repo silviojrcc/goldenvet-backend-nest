@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('product')
 export class Product {
@@ -53,4 +59,17 @@ export class Product {
   @ApiProperty()
   @Column()
   image: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  checkSlug() {
+    if (!this.slug) {
+      this.slug = this.name;
+    }
+
+    this.slug = this.slug
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '');
+  }
 }
