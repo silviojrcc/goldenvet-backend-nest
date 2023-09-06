@@ -22,7 +22,9 @@ export class Product {
     description: 'Bolsa de alimento para perros sabrositos',
     uniqueItems: true,
   })
-  @Column()
+  @Column('text', {
+    unique: true,
+  })
   name: string;
 
   @ApiProperty({
@@ -30,7 +32,10 @@ export class Product {
       'Este alimento es el mejor que podrías darle a tus amigos peludos, nada como un buen alimentazo',
     description: 'Product description',
   })
-  @Column()
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
   description: string;
 
   @ApiProperty({
@@ -46,18 +51,22 @@ export class Product {
     example: '50',
     description: 'Product stock',
   })
-  @Column()
+  @Column('int', {
+    default: 0,
+  })
   stock: number;
 
   @ApiProperty({
     example: 'alimento_sabrositos_20kg',
     description: 'Product Slug - For SEO',
   })
-  @Column()
+  @Column('text', {
+    unique: true,
+  })
   slug: string;
 
   @ApiProperty()
-  @Column()
+  @Column('text')
   image: string;
 
   @BeforeInsert()
