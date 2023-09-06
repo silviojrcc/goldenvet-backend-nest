@@ -70,7 +70,7 @@ export class ProductsController {
 
   @ApiResponse({
     status: 200,
-    description: 'Successfully retrieved the list of products',
+    description: 'Successfully retrieved the product',
     type: Product,
   })
   @ApiResponse({
