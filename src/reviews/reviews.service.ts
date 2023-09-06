@@ -25,7 +25,12 @@ export class ReviewsService {
   }
 
   findAll(paginationDto: PaginationDto) {
-    return `This action returns all reviews`;
+    const { limit = 10, offset = 0 } = paginationDto;
+    const reviews = this.reviewRepository.find({
+      take: limit,
+      skip: offset,
+    });
+    return reviews;
   }
 
   findOne(id: string) {
