@@ -51,8 +51,16 @@ export class ReviewsService {
     }
   }
 
-  update(id: string, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
+  async update(id: string, updateReviewDto: UpdateReviewDto) {
+    try {
+      const review = await this.findOne(id);
+      if (!review)
+        throw new NotFoundException(`Review with id ${id} not found`);
+
+      return await this.reviewRepository.update(id, updateReviewDto);
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   async remove(id: string) {

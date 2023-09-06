@@ -13,7 +13,7 @@ import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Review } from './entities/review.entity';
 
 @ApiTags('Reviews')
@@ -74,6 +74,7 @@ export class ReviewsController {
     return this.reviewsService.findOne(id);
   }
 
+  @ApiExcludeEndpoint()
   @ApiResponse({
     status: 200,
     description: 'Successfully updated the review',
