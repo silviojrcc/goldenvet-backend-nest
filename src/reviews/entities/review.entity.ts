@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Review {
@@ -51,4 +51,9 @@ export class Review {
   })
   @Column('int')
   rating: number;
+
+  @BeforeInsert()
+  setPublicationDate() {
+    this.publicationDate = new Date();
+  }
 }
