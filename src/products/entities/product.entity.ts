@@ -72,9 +72,7 @@ export class Product {
   @BeforeInsert()
   @BeforeUpdate()
   checkSlug() {
-    if (!this.slug) {
-      this.slug = this.name;
-    }
+    this.slug = this.name;
 
     this.slug = this.slug
       .toLowerCase()

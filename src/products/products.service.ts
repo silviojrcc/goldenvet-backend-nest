@@ -60,8 +60,17 @@ export class ProductsService {
     return product;
   }
 
-  update(id: string, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    try {
+      const product = this.findOne(id);
+
+      if (!product)
+        throw new NotFoundException(`Product with id ${id} not found`);
+
+      return await this.productRepository.update(id, updateProductDto);
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   async remove(id: string) {
@@ -70,7 +79,7 @@ export class ProductsService {
     if (!product)
       throw new NotFoundException(`Product with id ${id} not found`);
 
-    await this.productRepository.remove(product);
+    return await this.productRepository.remove(product);
   }
 
   private handleDBExceptions(error: any) {
