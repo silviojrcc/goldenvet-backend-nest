@@ -26,12 +26,12 @@ export class CreateProductDto {
     description: 'Product Description',
     nullable: true,
     minLength: 5,
-    maxLength: 200,
+    maxLength: 150,
   })
   @IsString()
   @IsOptional()
   @MinLength(5)
-  @MaxLength(200)
+  @MaxLength(150)
   description: string;
 
   @ApiProperty({
