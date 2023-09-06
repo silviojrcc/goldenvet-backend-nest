@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
@@ -34,7 +34,16 @@ export class ReviewsService {
   }
 
   findOne(id: string) {
-    return `This action returns a #${id} review`;
+    try {
+      const review = this.reviewRepository.findOneBy({ id });
+
+      if (!review)
+        throw new NotFoundException(`Review with id ${id} not found`);
+
+      return review;
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 
   update(id: string, updateReviewDto: UpdateReviewDto) {
