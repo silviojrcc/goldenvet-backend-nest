@@ -1,3 +1,4 @@
+import { PaginationDto } from './../common/pagination.dto';
 import {
   BadRequestException,
   Injectable,
@@ -28,8 +29,13 @@ export class ProductsService {
     }
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+    const products = await this.productRepository.find({
+      take: limit,
+      skip: offset,
+    });
+    return products;
   }
 
   findOne(id: string) {
