@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsInt,
   IsPositive,
@@ -9,16 +10,34 @@ import {
 } from 'class-validator';
 
 export class CreateReviewDto {
+  @ApiProperty({
+    example: 'John Doe',
+    description: 'Author name (1-25 characters)',
+    minLength: 1,
+    maxLength: 25,
+  })
   @IsString()
   @MinLength(1)
   @MaxLength(25)
   name: string;
 
+  @ApiProperty({
+    example: 'This is a comment.',
+    description: 'Review comment (5-150 characters)',
+    minLength: 5,
+    maxLength: 150,
+  })
   @IsString()
   @MinLength(5)
   @MaxLength(150)
   comment: string;
 
+  @ApiProperty({
+    example: 4,
+    description: 'Rating (1-5)',
+    minimum: 1,
+    maximum: 5,
+  })
   @IsInt()
   @Min(1)
   @Max(5)
