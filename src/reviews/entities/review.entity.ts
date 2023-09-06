@@ -19,7 +19,6 @@ export class Review {
   })
   @Column({
     type: 'text',
-    length: 25,
   })
   authorName: string;
 
