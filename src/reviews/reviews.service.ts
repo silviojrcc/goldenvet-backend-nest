@@ -1,10 +1,15 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Review } from './entities/review.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class ReviewsService {
@@ -20,7 +25,7 @@ export class ReviewsService {
       const review = this.reviewRepository.create(createReviewDto);
       return await this.reviewRepository.save(review);
     } catch (error) {
-      this.logger.error(error);
+      this.handleDBExceptions(error);
     }
   }
 
@@ -42,7 +47,7 @@ export class ReviewsService {
 
       return review;
     } catch (error) {
-      this.logger.error(error);
+      this.handleDBExceptions(error);
     }
   }
 
@@ -50,7 +55,22 @@ export class ReviewsService {
     return `This action updates a #${id} review`;
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} review`;
+  async remove(id: string) {
+    try {
+      const review = await this.findOne(id);
+      if (!review)
+        throw new NotFoundException(`Review with id ${id} not found`);
+
+      return await this.reviewRepository.remove(review);
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  private handleDBExceptions(error: any) {
+    this.logger.error(error);
+    throw new InternalServerErrorException(
+      'Unexpected error, check server logs',
+    );
   }
 }
