@@ -15,12 +15,18 @@ export class AuthService {
 
   async register(registerUserDto: RegisterUserDto) {
     const { password, ...userData } = registerUserDto;
+
     const user = await this.userService.create({
       ...userData,
       password: bcrypt.hashSync(password, 10),
     });
+
     delete user.password;
-    return user;
+
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id }),
+    };
   }
 
   async login(loginDto: LoginDto) {
@@ -33,6 +39,7 @@ export class AuthService {
       throw new UnauthorizedException('Email or password is wrong');
 
     delete user.password;
+
     return {
       ...user,
       token: this.getJwtToken({ id: user.id }),
