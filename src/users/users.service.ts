@@ -53,7 +53,7 @@ export class UsersService {
     const { email } = loginDto;
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { email: true, password: true },
+      select: { email: true, password: true, id: true },
     });
     return user;
   }
