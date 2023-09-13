@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UsersService) {}
+
   async register(registerUserDto: RegisterUserDto) {
     const { password, ...userData } = registerUserDto;
     const user = await this.userService.create({

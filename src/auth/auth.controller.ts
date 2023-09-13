@@ -36,7 +36,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Login successful: User has been authenticated',
-    type: User, // Reemplaza 'User' con el tipo de objeto que representa un usuario en tu aplicación
+    type: User,
   })
   @ApiResponse({
     status: 400,
