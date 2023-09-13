@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { LoginDto } from 'src/auth/dto/login.dto';
 
 @Injectable()
 export class UsersService {
@@ -28,8 +29,12 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    try {
+      return await this.userRepository.find();
+    } catch (error) {
+      this.handleDBErrors(error);
+    }
   }
 
   findOne(id: number) {
@@ -42,6 +47,15 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async findOneForLogin(loginDto: LoginDto) {
+    const { email } = loginDto;
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: { email: true, password: true },
+    });
+    return user;
   }
 
   private handleDBErrors(error: any) {
