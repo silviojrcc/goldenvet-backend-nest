@@ -6,11 +6,15 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { User } from 'src/users/entities/user.entity';
+import { PaginationDto } from 'src/common/pagination.dto';
 
 @ApiTags('Appointments')
 @Controller('appointments')
@@ -18,18 +22,21 @@ export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
   @Post()
-  create(@Body() createAppointmentDto: CreateAppointmentDto) {
-    return this.appointmentsService.create(createAppointmentDto);
+  create(
+    @Body() createAppointmentDto: CreateAppointmentDto,
+    @GetUser() user: User,
+  ) {
+    return this.appointmentsService.create(createAppointmentDto, user);
   }
 
   @Get()
-  findAll() {
-    return this.appointmentsService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.appointmentsService.findAll(paginationDto);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.appointmentsService.findOne(+id);
+    return this.appointmentsService.findOne(id);
   }
 
   @Patch(':id')
@@ -37,11 +44,11 @@ export class AppointmentsController {
     @Param('id') id: string,
     @Body() updateAppointmentDto: UpdateAppointmentDto,
   ) {
-    return this.appointmentsService.update(+id, updateAppointmentDto);
+    return this.appointmentsService.update(id, updateAppointmentDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.appointmentsService.remove(+id);
+    return this.appointmentsService.remove(id);
   }
 }
