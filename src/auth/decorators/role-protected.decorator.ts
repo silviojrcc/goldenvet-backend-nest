@@ -3,5 +3,6 @@ import { ValidRoles } from '../interfaces/valid-roles.interface';
 
 export const META_ROLES = 'roles';
 
-export const RoleProtected = (...args: ValidRoles[]) =>
-  SetMetadata(META_ROLES, args);
+export const RoleProtected = (...args: ValidRoles[]) => {
+  return SetMetadata(META_ROLES, args);
+};
