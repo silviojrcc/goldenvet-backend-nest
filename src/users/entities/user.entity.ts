@@ -3,9 +3,11 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Role } from '../enums/user-role.enum';
+import { Appointment } from 'src/appointments/entities/appointment.entity';
 
 @Entity()
 export class User {
@@ -35,6 +37,9 @@ export class User {
     default: true,
   })
   isActive: boolean;
+
+  @OneToMany(() => Appointment, (appointment) => appointment.patient)
+  appointments: Appointment;
 
   @BeforeInsert()
   @BeforeUpdate()
