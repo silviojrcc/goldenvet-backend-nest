@@ -20,6 +20,7 @@ export class AppointmentsService {
       ...createAppointmentDto,
       patient: user,
     });
+    delete appointment.patient;
     return this.appointmentRepository.save(appointment);
   }
 
