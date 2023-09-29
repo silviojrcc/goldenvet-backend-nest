@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -15,31 +15,54 @@ export class AppointmentsService {
     private readonly appointmentRepository: Repository<Appointment>,
   ) {}
 
-  create(createAppointmentDto: CreateAppointmentDto, user: User) {
-    const appointment = this.appointmentRepository.create({
+  async create(createAppointmentDto: CreateAppointmentDto, user: User) {
+    const appointment = await this.appointmentRepository.create({
       ...createAppointmentDto,
       patient: user,
     });
     return this.appointmentRepository.save(appointment);
   }
 
-  findAll(paginationDto: PaginationDto) {
-    const { limit = 10, offset = 0 } = paginationDto;
-    return this.appointmentRepository.find({
-      take: limit,
-      skip: offset,
-    });
+  async findAll(paginationDto: PaginationDto) {
+    try {
+      const { limit = 10, offset = 0 } = paginationDto;
+      return await this.appointmentRepository.find({
+        take: limit,
+        skip: offset,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} appointment`;
+  async findOne(id: string) {
+    try {
+      const appointment = await this.appointmentRepository.findOneBy({ id });
+      if (!appointment) throw new NotFoundException('Appointment not found');
+      return appointment;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  update(id: string, updateAppointmentDto: UpdateAppointmentDto) {
-    return `This action updates a #${id} appointment`;
+  async update(id: string, updateAppointmentDto: UpdateAppointmentDto) {
+    try {
+      const appointment = await this.findOne(id);
+      return await this.appointmentRepository.save({
+        ...appointment,
+        ...updateAppointmentDto,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} appointment`;
+  async remove(id: string) {
+    try {
+      const appointment = await this.findOne(id);
+      return await this.appointmentRepository.remove(appointment);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
