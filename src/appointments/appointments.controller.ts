@@ -15,17 +15,20 @@ import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { PaginationDto } from 'src/common/pagination.dto';
+import { Auth } from 'src/auth/decorators/auth.decorator';
 
 @ApiTags('Appointments')
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
+  @Auth()
   @Post()
   create(
     @Body() createAppointmentDto: CreateAppointmentDto,
     @GetUser() user: User,
   ) {
+    console.log(user);
     return this.appointmentsService.create(createAppointmentDto, user);
   }
 

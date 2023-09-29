@@ -1,17 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { PaginationDto } from 'src/common/pagination.dto';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { User } from 'src/users/entities/user.entity';
+import { Appointment } from './entities/appointment.entity';
 
 @Injectable()
 export class AppointmentsService {
+  constructor(
+    @InjectRepository(Appointment)
+    private readonly appointmentRepository: Repository<Appointment>,
+  ) {}
+
   create(createAppointmentDto: CreateAppointmentDto, user: User) {
-    return 'This action adds a new appointment';
+    const appointment = this.appointmentRepository.create({
+      ...createAppointmentDto,
+      patient: user,
+    });
+    return this.appointmentRepository.save(appointment);
   }
 
   findAll(paginationDto: PaginationDto) {
-    return `This action returns all appointments`;
+    const { limit = 10, offset = 0 } = paginationDto;
+    return this.appointmentRepository.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
   findOne(id: string) {

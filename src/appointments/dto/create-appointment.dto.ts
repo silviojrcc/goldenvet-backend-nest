@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsString } from 'class-validator';
+import { IsDateString, IsString } from 'class-validator';
 
 export class CreateAppointmentDto {
   @ApiProperty({
@@ -13,6 +13,6 @@ export class CreateAppointmentDto {
     description: 'Appointment date',
     nullable: false,
   })
-  @IsDate()
+  @IsDateString()
   appointmentDate: Date;
 }

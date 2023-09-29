@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('appointment')
 export class Appointment {
@@ -39,4 +45,9 @@ export class Appointment {
   })
   @ManyToOne(() => User, (user) => user.appointments)
   patient: User;
+
+  @BeforeInsert()
+  setCreatedAt() {
+    this.createdAt = new Date();
+  }
 }
