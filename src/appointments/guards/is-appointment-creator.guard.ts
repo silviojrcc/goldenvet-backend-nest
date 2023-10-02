@@ -10,12 +10,13 @@ import { AppointmentsService } from '../appointments.service';
 import { ValidRoles } from 'src/auth/interfaces/valid-roles.interface';
 
 @Injectable()
-export class IsCreatorGuard implements CanActivate {
+export class IsAppointmentCreatorGuard implements CanActivate {
   constructor(private readonly appointmentService: AppointmentsService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const { user, params } = context.switchToHttp().getRequest();
-
+    console.log(user);
+    console.log(params);
     if (!params) throw new BadRequestException('Appointment id not found');
 
     if (!user) throw new UnauthorizedException('User not found in request');
