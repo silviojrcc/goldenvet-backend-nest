@@ -42,11 +42,14 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
   });
 
   describe('POST Create Review', () => {
-    it('should create a review successfully', () => {
-      return request(app.getHttpServer())
+    it('should create a review successfully', async () => {
+      const createResponse = await request(app.getHttpServer())
         .post('/reviews')
         .send(review)
         .expect(HttpStatus.CREATED);
+
+      expect(createResponse.body.id).toBeDefined();
+      expect(createResponse.body.comment).toBe(review.comment);
     });
 
     it('should return bad request for invalid input', () => {
@@ -60,6 +63,16 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
         .post('/reviews')
         .send(invalidReview)
         .expect(HttpStatus.BAD_REQUEST);
+    });
+  });
+
+  describe('Get all reviews', () => {
+    it('should get all reviews successfully', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/reviews')
+        .expect(HttpStatus.OK);
+
+      expect(Array.isArray(response.body)).toBe(true);
     });
   });
 
@@ -114,6 +127,25 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
 
       expect(patchResponse.body.id).toBe(reviewId);
       expect(patchResponse.body.comment).toBe(updatedData.comment);
+    });
+  });
+
+  describe('Delete review', () => {
+    it('should delete a review successfully', async () => {
+      const createResponse = await request(app.getHttpServer())
+        .post('/reviews')
+        .send(review)
+        .expect(HttpStatus.CREATED);
+
+      const reviewId = createResponse.body.id;
+
+      await request(app.getHttpServer())
+        .delete(`/reviews/${reviewId}`)
+        .expect(HttpStatus.OK);
+
+      return await request(app.getHttpServer())
+        .get(`/reviews/${reviewId}`)
+        .expect(HttpStatus.NOT_FOUND);
     });
   });
 
