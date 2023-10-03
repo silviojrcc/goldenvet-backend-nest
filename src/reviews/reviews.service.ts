@@ -41,8 +41,7 @@ export class ReviewsService {
   async findOne(id: string) {
     try {
       const review = await this.reviewRepository.findOneBy({ id });
-      console.log(review);
-      if (review == null || !review)
+      if (!review)
         throw new NotFoundException(`Review with id ${id} not found`);
 
       return review;

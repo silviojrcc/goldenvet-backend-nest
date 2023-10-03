@@ -14,7 +14,7 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
 
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         ReviewsModule,
@@ -41,11 +41,26 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
     await app.init();
   });
 
-  it('/ (POST)', () => {
-    return request(app.getHttpServer())
-      .post('/reviews')
-      .send(review)
-      .expect(HttpStatus.CREATED);
+  describe('POST Create Review', () => {
+    it('should create a review successfully', () => {
+      return request(app.getHttpServer())
+        .post('/reviews')
+        .send(review)
+        .expect(HttpStatus.CREATED);
+    });
+
+    it('should return bad request for invalid input', () => {
+      const invalidReview: CreateReviewDto = {
+        authorName: 'Silvio',
+        comment: 'Está muy buena la api',
+        rating: 6,
+      };
+
+      return request(app.getHttpServer())
+        .post('/reviews')
+        .send(invalidReview)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
   });
 
   describe('GET One Review by ID', () => {
