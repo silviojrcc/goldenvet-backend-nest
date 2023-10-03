@@ -46,11 +46,11 @@ export class AppointmentsService {
     }
   }
 
-  async findOneWithPatient(id: string) {
-    return await this.appointmentRepository.findOne(id, {
-      relations: ['patient'],
-    });
-  }
+  // async findOneWithPatient(id: string) {
+  //   return await this.appointmentRepository.findOne(id, {
+  //     relations: ['patient'],
+  //   });
+  // }
 
   async update(id: string, updateAppointmentDto: UpdateAppointmentDto) {
     try {

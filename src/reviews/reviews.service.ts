@@ -38,11 +38,11 @@ export class ReviewsService {
     return reviews;
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     try {
-      const review = this.reviewRepository.findOneBy({ id });
-
-      if (!review)
+      const review = await this.reviewRepository.findOneBy({ id });
+      console.log(review);
+      if (review == null || !review)
         throw new NotFoundException(`Review with id ${id} not found`);
 
       return review;
@@ -76,6 +76,8 @@ export class ReviewsService {
   }
 
   private handleDBExceptions(error: any) {
+    if (error instanceof NotFoundException) throw error;
+
     this.logger.error(error);
     throw new InternalServerErrorException(
       'Unexpected error, check server logs',

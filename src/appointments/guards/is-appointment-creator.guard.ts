@@ -14,24 +14,24 @@ export class IsAppointmentCreatorGuard implements CanActivate {
   constructor(private readonly appointmentService: AppointmentsService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const { user, params } = context.switchToHttp().getRequest();
-    console.log(user);
-    console.log(params);
-    if (!params) throw new BadRequestException('Appointment id not found');
+    // const { user, params } = context.switchToHttp().getRequest();
+    // console.log(user);
+    // console.log(params);
+    // if (!params) throw new BadRequestException('Appointment id not found');
 
-    if (!user) throw new UnauthorizedException('User not found in request');
+    // if (!user) throw new UnauthorizedException('User not found in request');
 
-    if (user.role === ValidRoles.ADMIN) return true;
+    // if (user.role === ValidRoles.ADMIN) return true;
 
-    const { id: appointmentId } = params;
-    const appointment = await this.searchAppointment(appointmentId);
+    // const { id: appointmentId } = params;
+    // const appointment = await this.searchAppointment(appointmentId);
 
-    if (!appointment) throw new NotFoundException('Appointment not found');
+    // if (!appointment) throw new NotFoundException('Appointment not found');
 
-    if (appointment.patient.id !== user.id)
-      throw new UnauthorizedException(
-        'User is not the creator of this appointment',
-      );
+    // if (appointment.patient.id !== user.id)
+    //   throw new UnauthorizedException(
+    //     'User is not the creator of this appointment',
+    //   );
 
     return true;
   }

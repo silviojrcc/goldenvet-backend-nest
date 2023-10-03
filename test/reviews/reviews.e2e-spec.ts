@@ -48,6 +48,37 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
       .expect(HttpStatus.CREATED);
   });
 
+  describe('GET One Review by ID', () => {
+    it('should retrieve a review by its ID', async () => {
+      const createResponse = await request(app.getHttpServer())
+        .post('/reviews')
+        .send(review)
+        .expect(HttpStatus.CREATED);
+
+      const reviewId = createResponse.body.id;
+
+      return request(app.getHttpServer())
+        .get(`/reviews/${reviewId}`)
+        .expect(HttpStatus.OK);
+    });
+
+    it('should return bad request if not valid id is given', async () => {
+      const notValidId = 'not-valid-id';
+
+      return await request(app.getHttpServer())
+        .get(`/reviews/${notValidId}`)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    it('should handle non-existent review ID', async () => {
+      const nonExistentId = '7606c263-dc64-43e1-aad4-ee966b996f75';
+
+      return await request(app.getHttpServer())
+        .get(`/reviews/${nonExistentId}`)
+        .expect(HttpStatus.NOT_FOUND);
+    });
+  });
+
   afterAll(async () => {
     await app.close();
   });
