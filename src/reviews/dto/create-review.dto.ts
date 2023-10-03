@@ -19,7 +19,7 @@ export class CreateReviewDto {
   @IsString()
   @MinLength(1)
   @MaxLength(25)
-  name: string;
+  authorName: string;
 
   @ApiProperty({
     example: 'This is a comment.',
