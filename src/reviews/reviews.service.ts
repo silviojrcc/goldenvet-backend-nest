@@ -56,7 +56,10 @@ export class ReviewsService {
       if (!review)
         throw new NotFoundException(`Review with id ${id} not found`);
 
-      return await this.reviewRepository.update(id, updateReviewDto);
+      await this.reviewRepository.update(id, updateReviewDto);
+
+      const updatedReview = await this.findOne(id);
+      return updatedReview;
     } catch (error) {
       this.handleDBExceptions(error);
     }

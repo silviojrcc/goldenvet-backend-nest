@@ -94,6 +94,29 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
     });
   });
 
+  describe('Update Review', () => {
+    it('should update a review successfully', async () => {
+      const createResponse = await request(app.getHttpServer())
+        .post('/reviews')
+        .send(review)
+        .expect(HttpStatus.CREATED);
+
+      const reviewId = createResponse.body.id;
+
+      const updatedData = {
+        comment: 'Esta muy buena la api * Editado',
+      };
+
+      const patchResponse = await request(app.getHttpServer())
+        .patch(`/reviews/${reviewId}`)
+        .send(updatedData)
+        .expect(HttpStatus.OK);
+
+      expect(patchResponse.body.id).toBe(reviewId);
+      expect(patchResponse.body.comment).toBe(updatedData.comment);
+    });
+  });
+
   afterAll(async () => {
     await app.close();
   });
