@@ -15,6 +15,8 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { PaginationDto } from 'src/common/pagination.dto';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { ValidRoles } from 'src/auth/interfaces/valid-roles.interface';
 
 @ApiTags('Products')
 @Controller('products')
@@ -44,6 +46,7 @@ export class ProductsController {
     description:
       'Internal Server Error: An unexpected error occurred on the server',
   })
+  @Auth(ValidRoles.ADMIN)
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
@@ -110,6 +113,7 @@ export class ProductsController {
     description:
       'Internal Server Error: An unexpected error occurred on the server',
   })
+  @Auth(ValidRoles.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -141,6 +145,7 @@ export class ProductsController {
     description:
       'Internal Server Error: An unexpected error occurred on the server',
   })
+  @Auth(ValidRoles.ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
