@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductsService } from './products.service';
-import { ProductsController } from './products.controller';
-import { Product } from './entities/product.entity';
+import { ProductsService } from './application/service/products.service';
+import { ProductsController } from './interface/products.controller';
+import { Product } from './domain/product.entity';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
