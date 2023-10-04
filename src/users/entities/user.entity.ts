@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Role } from '../enums/user-role.enum';
-import { Appointment } from 'src/appointments/entities/appointment.entity';
+import { Appointment } from '../../appointments/entities/appointment.entity';
 
 @Entity()
 export class User {

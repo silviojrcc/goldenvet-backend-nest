@@ -3,9 +3,13 @@ import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
+import { sign } from 'jsonwebtoken';
 
 import { ReviewsModule } from '../../src/reviews/reviews.module';
 import { CreateReviewDto } from '../../src/reviews/dto/create-review.dto';
+import { AuthModule } from '../../src/auth/auth.module';
+import { UsersService } from '../../src/users/users.service';
+import { JwtStrategy } from '../../src/auth/strategies/jwt.strategy';
 
 describe('[Feature] Reviews - /reviews (e2e)', () => {
   const review: CreateReviewDto = {
@@ -14,11 +18,36 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
     rating: 5,
   };
 
+  const mockUserService = {
+    findOne: jest.fn().mockImplementation(async (id) => {
+      if (id === 'user') {
+        return {
+          id: '1',
+          isActive: true,
+          role: 'USER',
+        };
+      }
+
+      if (id === 'admin') {
+        return {
+          id: 'admin',
+          isActive: true,
+          role: 'ADMIN',
+        };
+      }
+    }),
+  };
+
   let app: INestApplication;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
+      providers: [
+        JwtStrategy,
+        { provide: UsersService, useValue: mockUserService },
+      ],
       imports: [
+        AuthModule,
         ConfigModule.forRoot({
           envFilePath: '.testing.env',
         }),
@@ -136,7 +165,7 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
   });
 
   describe('Delete review', () => {
-    it('should delete a review successfully', async () => {
+    it('should delete a review successfully if authorized', async () => {
       const createResponse = await request(app.getHttpServer())
         .post('/reviews')
         .send(review)
@@ -144,17 +173,63 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
 
       const reviewId = createResponse.body.id;
 
+      const authHeader = `Bearer ${generateValidJwtToken('admin')}`;
+
       await request(app.getHttpServer())
         .delete(`/reviews/${reviewId}`)
+        .set('Authorization', authHeader)
         .expect(HttpStatus.OK);
 
       return await request(app.getHttpServer())
         .get(`/reviews/${reviewId}`)
         .expect(HttpStatus.NOT_FOUND);
     });
+
+    it('should return unauthorized if not authorized', async () => {
+      const createResponse = await request(app.getHttpServer())
+        .post('/reviews')
+        .send(review)
+        .expect(HttpStatus.CREATED);
+
+      const reviewId = createResponse.body.id;
+
+      const authHeader = `Bearer ${generateValidJwtToken('user')}`;
+
+      await request(app.getHttpServer())
+        .delete(`/reviews/${reviewId}`)
+        .set('Authorization', authHeader)
+        .expect(HttpStatus.UNAUTHORIZED);
+    });
   });
+
+  // describe('Delete review', () => {
+  //   it('should delete a review successfully', async () => {
+  //     const createResponse = await request(app.getHttpServer())
+  //       .post('/reviews')
+  //       .send(review)
+  //       .expect(HttpStatus.CREATED);
+
+  //     const reviewId = createResponse.body.id;
+
+  //     await request(app.getHttpServer())
+  //       .delete(`/reviews/${reviewId}`)
+  //       .expect(HttpStatus.OK);
+
+  //     return await request(app.getHttpServer())
+  //       .get(`/reviews/${reviewId}`)
+  //       .expect(HttpStatus.NOT_FOUND);
+  //   });
+  // });
 
   afterAll(async () => {
     await app.close();
   });
 });
+
+function generateValidJwtToken(userId: string): string {
+  const secretKey = process.env.JWT_SECRET;
+
+  const token = sign(userId, secretKey);
+
+  return token;
+}
