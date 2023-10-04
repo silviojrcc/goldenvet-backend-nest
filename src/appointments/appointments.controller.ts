@@ -18,13 +18,14 @@ import { User } from 'src/users/entities/user.entity';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { IsAppointmentCreatorGuard } from './guards/is-appointment-creator.guard';
+import { ValidRoles } from 'src/auth/interfaces/valid-roles.interface';
 
 @ApiTags('Appointments')
 @Controller('appointments')
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
-  @Auth()
+  @Auth(ValidRoles.USER)
   @Post()
   create(
     @Body() createAppointmentDto: CreateAppointmentDto,
@@ -39,13 +40,15 @@ export class AppointmentsController {
     return this.appointmentsService.findAll(paginationDto);
   }
 
-  // @UseGuards(IsAppointmentCreatorGuard)
-  // @Auth()
+  @UseGuards(IsAppointmentCreatorGuard)
+  @Auth()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.appointmentsService.findOne(id);
   }
 
+  @UseGuards(IsAppointmentCreatorGuard)
+  @Auth()
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -54,6 +57,8 @@ export class AppointmentsController {
     return this.appointmentsService.update(id, updateAppointmentDto);
   }
 
+  @UseGuards(IsAppointmentCreatorGuard)
+  @Auth()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.appointmentsService.remove(id);

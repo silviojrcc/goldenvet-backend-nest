@@ -14,29 +14,32 @@ export class IsAppointmentCreatorGuard implements CanActivate {
   constructor(private readonly appointmentService: AppointmentsService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // const { user, params } = context.switchToHttp().getRequest();
-    // console.log(user);
-    // console.log(params);
-    // if (!params) throw new BadRequestException('Appointment id not found');
+    const { user, params } = context.switchToHttp().getRequest();
 
-    // if (!user) throw new UnauthorizedException('User not found in request');
+    if (!params) throw new BadRequestException('Appointment id not found');
 
-    // if (user.role === ValidRoles.ADMIN) return true;
+    if (!user) throw new UnauthorizedException('User not found in request');
 
-    // const { id: appointmentId } = params;
-    // const appointment = await this.searchAppointment(appointmentId);
+    if (user.role === ValidRoles.ADMIN) return true;
 
-    // if (!appointment) throw new NotFoundException('Appointment not found');
+    const { id: appointmentId } = params;
+    const appointment = await this.searchAppointment(appointmentId);
 
-    // if (appointment.patient.id !== user.id)
-    //   throw new UnauthorizedException(
-    //     'User is not the creator of this appointment',
-    //   );
+    if (!appointment) throw new NotFoundException('Appointment not found');
+
+    console.log(appointment);
+
+    if (appointment.patient.id !== user.id)
+      throw new UnauthorizedException(
+        'User is not the creator of this appointment',
+      );
+
+    console.log('tiene permiso para ver este turno');
 
     return true;
   }
 
   private async searchAppointment(appointmentId: string) {
-    return await this.appointmentService.findOne(appointmentId);
+    return await this.appointmentService.findOneWithPatient(appointmentId);
   }
 }
