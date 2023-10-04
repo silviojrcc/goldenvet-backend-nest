@@ -10,14 +10,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AppointmentsService } from './appointments.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { AppointmentsService } from '../application/service/appointments.service';
+import { CreateAppointmentDto } from '../application/dto/create-appointment.dto';
+import { UpdateAppointmentDto } from '../application/dto/update-appointment.dto';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { Auth } from 'src/auth/decorators/auth.decorator';
-import { IsAppointmentCreatorGuard } from './guards/is-appointment-creator.guard';
+import { IsAppointmentCreatorGuard } from '../infrastructure/guards/is-appointment-creator.guard';
 import { ValidRoles } from 'src/auth/interfaces/valid-roles.interface';
 
 @ApiTags('Appointments')

@@ -6,7 +6,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
-import { AppointmentsService } from '../appointments.service';
+import { AppointmentsService } from '../../application/service/appointments.service';
 import { ValidRoles } from 'src/auth/interfaces/valid-roles.interface';
 
 @Injectable()
@@ -27,14 +27,10 @@ export class IsAppointmentCreatorGuard implements CanActivate {
 
     if (!appointment) throw new NotFoundException('Appointment not found');
 
-    console.log(appointment);
-
     if (appointment.patient.id !== user.id)
       throw new UnauthorizedException(
         'User is not the creator of this appointment',
       );
-
-    console.log('tiene permiso para ver este turno');
 
     return true;
   }
