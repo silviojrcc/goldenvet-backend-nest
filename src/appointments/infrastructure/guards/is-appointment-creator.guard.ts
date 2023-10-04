@@ -7,7 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { AppointmentsService } from '../../application/service/appointments.service';
-import { ValidRoles } from 'src/auth/interfaces/valid-roles.interface';
+import { ValidRoles } from 'src/auth/application/interfaces/valid-roles.interface';
 
 @Injectable()
 export class IsAppointmentCreatorGuard implements CanActivate {

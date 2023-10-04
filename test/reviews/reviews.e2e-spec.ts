@@ -9,7 +9,7 @@ import { ReviewsModule } from '../../src/reviews/reviews.module';
 import { CreateReviewDto } from '../../src/reviews/dto/create-review.dto';
 import { AuthModule } from '../../src/auth/auth.module';
 import { UsersService } from '../../src/users/users.service';
-import { JwtStrategy } from '../../src/auth/strategies/jwt.strategy';
+import { JwtStrategy } from '../../src/auth/infrastructure/strategies/jwt.strategy';
 
 describe('[Feature] Reviews - /reviews (e2e)', () => {
   const review: CreateReviewDto = {
