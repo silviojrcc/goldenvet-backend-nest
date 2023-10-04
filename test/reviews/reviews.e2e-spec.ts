@@ -20,7 +20,7 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
-          envFilePath: '.env.testing',
+          envFilePath: '.testing.env',
         }),
         ReviewsModule,
         TypeOrmModule.forRoot({
