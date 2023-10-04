@@ -1,8 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
-import * as request from 'supertest';
-import { ReviewsModule } from '../../src/reviews/reviews.module';
+import { ConfigModule } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import * as request from 'supertest';
+
+import { ReviewsModule } from '../../src/reviews/reviews.module';
 import { CreateReviewDto } from '../../src/reviews/dto/create-review.dto';
 
 describe('[Feature] Reviews - /reviews (e2e)', () => {
@@ -17,14 +19,17 @@ describe('[Feature] Reviews - /reviews (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
+        ConfigModule.forRoot({
+          envFilePath: '.env.testing',
+        }),
         ReviewsModule,
         TypeOrmModule.forRoot({
           type: 'postgres',
           host: process.env.DB_HOST,
           port: 5433,
-          database: 'goldenvetdb-test',
-          username: 'postgres',
-          password: '12345678',
+          database: process.env.DB_NAME,
+          username: process.env.DB_USERNAME,
+          password: process.env.DB_PASSWORD,
           autoLoadEntities: true,
           synchronize: true,
         }),
