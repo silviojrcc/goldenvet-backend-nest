@@ -9,12 +9,12 @@ import {
   Query,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { ReviewsService } from './reviews.service';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { UpdateReviewDto } from './dto/update-review.dto';
-import { PaginationDto } from '../common/pagination.dto';
+import { ReviewsService } from '../application/service/reviews.service';
+import { CreateReviewDto } from '../application/dto/create-review.dto';
+import { UpdateReviewDto } from '../application/dto/update-review.dto';
+import { PaginationDto } from '../../common/pagination.dto';
 import { ApiExcludeEndpoint, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Review } from './entities/review.entity';
+import { Review } from '../domain/review.entity';
 
 @ApiTags('Reviews')
 @Controller('reviews')

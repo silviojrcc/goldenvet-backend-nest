@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ReviewsService } from './reviews.service';
-import { ReviewsController } from './reviews.controller';
+import { ReviewsService } from './application/service/reviews.service';
+import { ReviewsController } from './interface/reviews.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Review } from './entities/review.entity';
+import { Review } from './domain/review.entity';
 
 @Module({
   controllers: [ReviewsController],
