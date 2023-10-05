@@ -1,31 +1,24 @@
-import { PaginationDto } from '../../../common/pagination.dto';
 import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
   Logger,
-  NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { validate as isUUID } from 'uuid';
-import { CreateProductDto } from '../dto/create-product.dto';
-import { UpdateProductDto } from '../dto/update-product.dto';
-import { Product } from '../../domain/product.entity';
+
+import { PaginationDto } from '@/common/pagination.dto';
+import { CreateProductDto } from '@/products/application/dto/create-product.dto';
+import { UpdateProductDto } from '@/products/application/dto/update-product.dto';
+import { ProductRepository } from '@/products/infrastructure/database/product.repository';
 
 @Injectable()
 export class ProductsService {
-  constructor(
-    @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,
-  ) {}
+  constructor(private readonly productRepository: ProductRepository) {}
 
   private logger = new Logger('ProductsService');
 
   async create(createProductDto: CreateProductDto) {
     try {
-      const product = this.productRepository.create(createProductDto);
-      return await this.productRepository.save(product);
+      return await this.productRepository.create(createProductDto);
     } catch (error) {
       this.handleDBExceptions(error);
     }
@@ -33,40 +26,23 @@ export class ProductsService {
 
   async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto;
-    const products = await this.productRepository.find({
-      take: limit,
-      skip: offset,
+    const products = await this.productRepository.findAll({
+      limit,
+      offset,
     });
     return products;
   }
 
   async findOne(term: string) {
-    let product: Product;
-
-    if (isUUID(term)) {
-      product = await this.productRepository.findOneBy({ id: term });
-    } else {
-      const queryBuilder = this.productRepository.createQueryBuilder('prod');
-      product = await queryBuilder
-        .where('slug = :slug', {
-          slug: term,
-        })
-        .getOne();
+    try {
+      return this.productRepository.findOneByTerm(term);
+    } catch (error) {
+      this.handleDBExceptions(error);
     }
-
-    if (!product)
-      throw new NotFoundException(`Product with term ${term} not found`);
-
-    return product;
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     try {
-      const product = this.findOne(id);
-
-      if (!product)
-        throw new NotFoundException(`Product with id ${id} not found`);
-
       return await this.productRepository.update(id, updateProductDto);
     } catch (error) {
       this.handleDBExceptions(error);
@@ -74,12 +50,11 @@ export class ProductsService {
   }
 
   async remove(id: string) {
-    const product = await this.productRepository.findOneBy({ id });
-
-    if (!product)
-      throw new NotFoundException(`Product with id ${id} not found`);
-
-    return await this.productRepository.remove(product);
+    try {
+      return await this.productRepository.remove(id);
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   private handleDBExceptions(error: any) {
