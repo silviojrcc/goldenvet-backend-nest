@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Role } from '../enums/user-role.enum';
+import { Role } from './enums/user-role.enum';
 import { Appointment } from '../../appointments/domain/appointment.entity';
 
 @Entity()

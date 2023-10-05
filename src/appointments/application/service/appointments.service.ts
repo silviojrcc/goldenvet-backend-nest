@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/pagination.dto';
 import { CreateAppointmentDto } from '../dto/create-appointment.dto';
 import { UpdateAppointmentDto } from '../dto/update-appointment.dto';
-import { User } from 'src/users/entities/user.entity';
+import { User } from 'src/users/domain/user.entity';
 import { Appointment } from '../../domain/appointment.entity';
 
 @Injectable()
